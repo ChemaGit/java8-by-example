@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<project name="soccer league" basedir=".." default="usage">
+	<description>
+	    simple build file for the Soccer League
+	</description>
+	<!-- set global properties for this build  -->
+	<property file="scripts/build.properties"/>
+	
+	<target name="usage">
+		<echo message=""/>
+		<echo message="${name} build file"/>
+		<echo message="-----------------------------------"/>
+		<echo message=""/>
+		<echo message="Available targets are:"/>
+		<echo message=""/>
+		<echo message="clean     --> Delete the ${build.dir} and ${dist.dir} directory trees"/>
+		<echo message="init      --> Create the time stamp. Create build structure used by compile"/>
+		<echo message="compile   --> Compile the java code from ${src.dir} into ${build.dir}"/>
+		<echo message="dist      --> Create the distribution directory. Put everything in ${build.dir} into the MyProject-${DSTAMP}.jar file"/>
+		<echo message="deploy    --> Deploy application as directory"/>
+		<echo message="deploywar --> Deploy application as a WAR file"/>
+		<echo message="javadoc   --> Creates a Java documentation"/>
+		<echo message=""/>
+	</target>	
+	
+    <!-- Classpath for compiling, etc -->
+    <path id="classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>	
+	
+	<target name="init">
+	    <!-- Create the time stamp -->
+	    <tstamp/>
+	    <!-- Create the build directory structure used by compile -->
+	    <mkdir dir="${build.dir}"/>
+	</target>	
+	
+	<target name="compile" depends="init" description="compile the source">
+		<!-- Compile the java code from ${src.dir} into ${build.dir} -->
+	    <javac srcdir="${src.dir}" destdir="${build.dir}" debug="true" optimize="true" 
+	    	failonerror="true" includeantruntime="false">
+	    	<classpath refid="classpath"/>
+	    </javac>
+	</target>	
+	
+	<target name="dist" depends="clean, compile" description="generate the distribution">
+	    <!-- Create the distribution directory -->
+	    <mkdir dir="${dist.dir}/lib"/>
+	    <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+	    <jar jarfile="${dist.dir}/lib/SoccerLeague-${DSTAMP}.jar" basedir="${build.dir}"/>
+	</target>	
+	
+	<target name="clean" description="clean up">
+	    <!-- Delete the ${build.dir} and ${dist.dir} directory trees -->
+	    <delete dir="${build.dir}"/>
+	    <delete dir="${dist.dir}"/>
+	</target>	
+	
+	<target name="javadoc">
+		<javadoc packagenames="soccer.*" sourcepath="${src.dir}" 
+			 destdir="doc" version="true" windowtitle="Soccer League">
+			 <doctitle><![CDATA[<h1>= Soccer League Application = </h1>]]></doctitle>
+			 <bottom><![CDATA[Copyright © 2017. All Rights Reserved.]]></bottom>
+			 <group title="soccer packages" packages="soccer.*"/>
+		</javadoc>
+	</target>
+
+</project>	
